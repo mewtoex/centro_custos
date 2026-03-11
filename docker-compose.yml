@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db-centrocusto:
+    image: postgres:15-alpine
+    container_name: postgres-centrocusto
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_DB: centrocustodb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_centrocusto:/var/lib/postgresql/data
+
+volumes:
+  pgdata_centrocusto:
