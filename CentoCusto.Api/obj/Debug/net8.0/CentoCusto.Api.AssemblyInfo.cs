@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CentoCusto.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a21a75a873991123c70252a85937cdbee24c2a16")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2bfa2d48981f7e13ff8c92bfe5bbfd19869672b7")]
 [assembly: System.Reflection.AssemblyProductAttribute("CentoCusto.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CentoCusto.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
