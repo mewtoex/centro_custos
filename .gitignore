@@ -1,0 +1,39 @@
+# ==========================================
+# Arquivos de Compilação do .NET e C#
+# ==========================================
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+
+# ==========================================
+# Arquivos do Visual Studio e VS Code
+# ==========================================
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ==========================================
+# Arquivos do Sistema Operacional
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ==========================================
+# Configurações Locais (Opcional, mas recomendado)
+# ==========================================
+# Descomente a linha abaixo se não quiser enviar o seu appsettings.Development.json para o GitHub
+# appsettings.Development.json
