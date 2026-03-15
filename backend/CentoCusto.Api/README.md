@@ -38,9 +38,7 @@ Ainda na pasta do projeto, inicie a API:
 
 Bash
 dotnet run
-A API estará disponível e a documentação interativa (Swagger) poderá ser acessada em:
-http://localhost:5000/swagger ou https://localhost:5001/swagger (verifique a porta no terminal).
-
+A API estará disponível e a documentação interativa (Swagger) poderá ser acessada em: https://localhost:5147/swagger 
 📋 Regras de Negócio Implementadas
 Idade Mínima: Pessoas menores de 18 anos só podem registrar transações do tipo "Despesa".
 
