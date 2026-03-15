@@ -26,7 +26,7 @@ Para rodar este projeto, você precisará ter instalado em sua máquina:
 
 **1. Subir o Banco de Dados:**
 Na raiz do projeto (onde está o arquivo `docker-compose.yml`), execute:
-```bash
+
 docker-compose up -d
 2. Criar as tabelas (Migrations):
 Navegue até a pasta do projeto da API (CentoCusto.Api) e execute os comandos do Entity Framework para gerar as tabelas no PostgreSQL:
