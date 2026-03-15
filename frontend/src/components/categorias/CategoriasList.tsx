@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { CategoriaForm } from "./CategoriaForm";
 import { toast } from "sonner";
-import { Plus, ArrowUpDown } from "lucide-react";
+import { Plus, ArrowUpDown, Loader2 } from "lucide-react";
 import { Categoria } from "@/types";
 
 type Ordenacao = { coluna: keyof Categoria | null; direcao: "asc" | "desc" };
@@ -13,13 +13,16 @@ type Ordenacao = { coluna: keyof Categoria | null; direcao: "asc" | "desc" };
 export function CategoriasList() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [modalAberto, setModalAberto] = useState(false);
+  const [carregando, setCarregando] = useState(true);
   const [ordem, setOrdem] = useState<Ordenacao>({ coluna: "id", direcao: "asc" });
 
   const carregarCategorias = async () => {
+    setCarregando(true);
     try {
       const response = await api.get("/categorias");
       setCategorias(response.data);
     } catch (error) { toast.error("Erro ao carregar categorias."); }
+    finally { setCarregando(false); }
   };
 
   useEffect(() => { carregarCategorias(); }, []);
@@ -27,10 +30,7 @@ export function CategoriasList() {
   const handleSucessoFormulario = () => { setModalAberto(false); carregarCategorias(); };
 
   const alternarOrdem = (coluna: keyof Categoria) => {
-    setOrdem({
-      coluna,
-      direcao: ordem.coluna === coluna && ordem.direcao === "asc" ? "desc" : "asc",
-    });
+    setOrdem({ coluna, direcao: ordem.coluna === coluna && ordem.direcao === "asc" ? "desc" : "asc" });
   };
 
   const categoriasOrdenadas = [...categorias].sort((a, b) => {
@@ -52,7 +52,7 @@ export function CategoriasList() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader><DialogTitle>Registar Nova Categoria</DialogTitle></DialogHeader>
-            <CategoriaForm onSuccess={handleSucessoFormulario} />
+            <CategoriaForm key={modalAberto ? "open" : "closed"} onSuccess={handleSucessoFormulario} />
           </DialogContent>
         </Dialog>
       </div>
@@ -61,20 +61,16 @@ export function CategoriasList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px] cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("id")}>
-                <div className="flex items-center gap-1">ID <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
-              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("descricao")}>
-                <div className="flex items-center gap-1">Descrição <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
-              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("finalidadeDescricao")}>
-                <div className="flex items-center gap-1">Finalidade <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
+              <TableHead className="w-[100px] cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("id")}><div className="flex items-center gap-1">ID <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
+              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("descricao")}><div className="flex items-center gap-1">Descrição <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
+              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("finalidadeDescricao")}><div className="flex items-center gap-1">Finalidade <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {categoriasOrdenadas.length === 0 ? (
-              <TableRow><TableCell colSpan={3} className="text-center py-6 text-slate-500">Nenhuma categoria registada.</TableCell></TableRow>
+            {carregando ? (
+              <TableRow><TableCell colSpan={3} className="text-center py-8 text-slate-500"><Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />A carregar dados...</TableCell></TableRow>
+            ) : categoriasOrdenadas.length === 0 ? (
+              <TableRow><TableCell colSpan={3} className="text-center py-8 text-slate-500">Nenhuma categoria registada.</TableCell></TableRow>
             ) : (
               categoriasOrdenadas.map((c) => (
                 <TableRow key={c.id}>

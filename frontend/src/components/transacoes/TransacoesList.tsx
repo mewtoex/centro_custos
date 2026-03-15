@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { TransacaoForm } from "./TransacaoForm";
 import { toast } from "sonner";
-import { Plus, ArrowUpDown } from "lucide-react";
+import { Plus, ArrowUpDown, Loader2 } from "lucide-react";
 import { Transacao } from "@/types";
 
 type Ordenacao = { coluna: keyof Transacao | null; direcao: "asc" | "desc" };
@@ -13,13 +13,16 @@ type Ordenacao = { coluna: keyof Transacao | null; direcao: "asc" | "desc" };
 export function TransacoesList() {
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);
   const [modalAberto, setModalAberto] = useState(false);
+  const [carregando, setCarregando] = useState(true);
   const [ordem, setOrdem] = useState<Ordenacao>({ coluna: "id", direcao: "asc" });
 
   const carregarTransacoes = async () => {
+    setCarregando(true);
     try {
       const response = await api.get("/transacoes");
       setTransacoes(response.data);
     } catch (error) { toast.error("Erro ao carregar transações."); }
+    finally { setCarregando(false); }
   };
 
   useEffect(() => { carregarTransacoes(); }, []);
@@ -31,10 +34,7 @@ export function TransacoesList() {
   };
 
   const alternarOrdem = (coluna: keyof Transacao) => {
-    setOrdem({
-      coluna,
-      direcao: ordem.coluna === coluna && ordem.direcao === "asc" ? "desc" : "asc",
-    });
+    setOrdem({ coluna, direcao: ordem.coluna === coluna && ordem.direcao === "asc" ? "desc" : "asc" });
   };
 
   const transacoesOrdenadas = [...transacoes].sort((a, b) => {
@@ -56,7 +56,7 @@ export function TransacoesList() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader><DialogTitle>Registar Nova Transação</DialogTitle></DialogHeader>
-            <TransacaoForm onSuccess={handleSucessoFormulario} />
+            <TransacaoForm key={modalAberto ? "open" : "closed"} onSuccess={handleSucessoFormulario} />
           </DialogContent>
         </Dialog>
       </div>
@@ -65,23 +65,17 @@ export function TransacoesList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px] cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("id")}>
-                <div className="flex items-center gap-1">ID <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
-              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("descricao")}>
-                <div className="flex items-center gap-1">Descrição <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
-              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("tipoDescricao")}>
-                <div className="flex items-center gap-1">Tipo <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
-              <TableHead className="text-right cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("valor")}>
-                <div className="flex items-center justify-end gap-1">Valor <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
+              <TableHead className="w-[100px] cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("id")}><div className="flex items-center gap-1">ID <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
+              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("descricao")}><div className="flex items-center gap-1">Descrição <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
+              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("tipoDescricao")}><div className="flex items-center gap-1">Tipo <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
+              <TableHead className="text-right cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("valor")}><div className="flex items-center justify-end gap-1">Valor <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transacoesOrdenadas.length === 0 ? (
-              <TableRow><TableCell colSpan={4} className="text-center py-6 text-slate-500">Nenhuma transação registada.</TableCell></TableRow>
+            {carregando ? (
+              <TableRow><TableCell colSpan={4} className="text-center py-8 text-slate-500"><Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />A carregar dados...</TableCell></TableRow>
+            ) : transacoesOrdenadas.length === 0 ? (
+              <TableRow><TableCell colSpan={4} className="text-center py-8 text-slate-500">Nenhuma transação registada.</TableCell></TableRow>
             ) : (
               transacoesOrdenadas.map((t) => (
                 <TableRow key={t.id}>

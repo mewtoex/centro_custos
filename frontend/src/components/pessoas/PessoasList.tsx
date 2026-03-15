@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PessoaForm } from "./PessoaForm";
 import { toast } from "sonner";
-import { Trash2, Plus, Pencil, ArrowUpDown } from "lucide-react"; 
+import { Trash2, Plus, Pencil, ArrowUpDown, Loader2 } from "lucide-react"; 
 import { Pessoa } from "@/types";
 
 type Ordenacao = { coluna: keyof Pessoa | null; direcao: "asc" | "desc" };
@@ -14,15 +14,18 @@ export function PessoasList() {
   const [pessoas, setPessoas] = useState<Pessoa[]>([]);
   const [modalAberto, setModalAberto] = useState(false);
   const [pessoaEditando, setPessoaEditando] = useState<Pessoa | null>(null);
-  
+  const [carregando, setCarregando] = useState(true); // <-- Estado de loading
   const [ordem, setOrdem] = useState<Ordenacao>({ coluna: "id", direcao: "asc" });
 
   const carregarPessoas = async () => {
+    setCarregando(true);
     try {
       const response = await api.get("/pessoas");
       setPessoas(response.data);
     } catch (error) {
       toast.error("Erro ao carregar lista de pessoas.");
+    } finally {
+      setCarregando(false);
     }
   };
 
@@ -44,10 +47,7 @@ export function PessoasList() {
   const handleSucessoFormulario = () => { setModalAberto(false); carregarPessoas(); };
 
   const alternarOrdem = (coluna: keyof Pessoa) => {
-    setOrdem({
-      coluna,
-      direcao: ordem.coluna === coluna && ordem.direcao === "asc" ? "desc" : "asc",
-    });
+    setOrdem({ coluna, direcao: ordem.coluna === coluna && ordem.direcao === "asc" ? "desc" : "asc" });
   };
 
   const pessoasOrdenadas = [...pessoas].sort((a, b) => {
@@ -69,7 +69,11 @@ export function PessoasList() {
             <DialogHeader>
               <DialogTitle>{pessoaEditando ? "Editar Pessoa" : "Registar Nova Pessoa"}</DialogTitle>
             </DialogHeader>
-            <PessoaForm onSuccess={handleSucessoFormulario} pessoaParaEditar={pessoaEditando} />
+            <PessoaForm 
+              key={modalAberto ? (pessoaEditando ? `edit-${pessoaEditando.id}` : "new") : "closed"} 
+              onSuccess={handleSucessoFormulario} 
+              pessoaParaEditar={pessoaEditando} 
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -78,21 +82,17 @@ export function PessoasList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("id")}>
-                <div className="flex items-center gap-1">ID <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
-              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("nome")}>
-                <div className="flex items-center gap-1">Nome <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
-              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("idade")}>
-                <div className="flex items-center gap-1">Idade <ArrowUpDown className="w-3 h-3 text-slate-400" /></div>
-              </TableHead>
+              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("id")}><div className="flex items-center gap-1">ID <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
+              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("nome")}><div className="flex items-center gap-1">Nome <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
+              <TableHead className="cursor-pointer hover:bg-slate-50 select-none" onClick={() => alternarOrdem("idade")}><div className="flex items-center gap-1">Idade <ArrowUpDown className="w-3 h-3 text-slate-400" /></div></TableHead>
               <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {pessoasOrdenadas.length === 0 ? (
-              <TableRow><TableCell colSpan={4} className="text-center py-6 text-slate-500">Nenhuma pessoa registada.</TableCell></TableRow>
+            {carregando ? (
+              <TableRow><TableCell colSpan={4} className="text-center py-8 text-slate-500"><Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />A carregar dados...</TableCell></TableRow>
+            ) : pessoasOrdenadas.length === 0 ? (
+              <TableRow><TableCell colSpan={4} className="text-center py-8 text-slate-500">Nenhuma pessoa registada.</TableCell></TableRow>
             ) : (
               pessoasOrdenadas.map((p) => (
                 <TableRow key={p.id}>
