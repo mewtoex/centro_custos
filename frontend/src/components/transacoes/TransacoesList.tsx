@@ -6,13 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { TransacaoForm } from "./TransacaoForm";
 import { toast } from "sonner";
 import { Plus, ArrowUpDown } from "lucide-react";
-
-interface Transacao {
-  id: number;
-  descricao: string;
-  valor: number;
-  tipoDescricao: string;
-}
+import { Transacao } from "@/types";
 
 type Ordenacao = { coluna: keyof Transacao | null; direcao: "asc" | "desc" };
 

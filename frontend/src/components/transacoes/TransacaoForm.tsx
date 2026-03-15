@@ -4,13 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Pessoa ,Categoria } from "@/types";
 
 interface TransacaoFormProps {
   onSuccess: () => void;
 }
-
-interface Pessoa { id: number; nome: string; }
-interface Categoria { id: number; descricao: string; }
 
 export function TransacaoForm({ onSuccess }: TransacaoFormProps) {
   const [pessoas, setPessoas] = useState<Pessoa[]>([]);

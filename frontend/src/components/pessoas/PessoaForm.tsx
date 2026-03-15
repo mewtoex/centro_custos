@@ -4,12 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
-interface Pessoa {
-  id: number;
-  nome: string;
-  idade: number;
-}
+import { Pessoa } from "@/types";
 
 interface PessoaFormProps {
   onSuccess: () => void;

@@ -5,27 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { RefreshCw } from "lucide-react"; 
-
-interface ResultadoTotais<T> {
-  itens: T[];
-  totalGeralReceitas: number;
-  totalGeralDespesas: number;
-  saldoLiquidoGeral: number;
-}
-
-interface TotalPessoa {
-  nomePessoa: string;
-  totalReceitas: number;
-  totalDespesas: number;
-  saldo: number;
-}
-
-interface TotalCategoria {
-  descricaoCategoria: string;
-  totalReceitas: number;
-  totalDespesas: number;
-  saldo: number;
-}
+import { ResultadoTotais ,TotalPessoa,TotalCategoria } from "@/types";
 
 export function Relatorios() {
   const [totaisPessoa, setTotaisPessoa] = useState<ResultadoTotais<TotalPessoa> | null>(null);

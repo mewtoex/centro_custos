@@ -6,12 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { PessoaForm } from "./PessoaForm";
 import { toast } from "sonner";
 import { Trash2, Plus, Pencil, ArrowUpDown } from "lucide-react"; 
-
-interface Pessoa {
-  id: number;
-  nome: string;
-  idade: number;
-}
+import { Pessoa } from "@/types";
 
 type Ordenacao = { coluna: keyof Pessoa | null; direcao: "asc" | "desc" };
 
